@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hardware Inspector Pro by AliStudio Lab</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="cpuz-app">
+    
+    <!-- Top Header Banner -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>
+        </div>
+        <div>
+          <h1 class="header-title">Hardware Inspector <span class="badge-pro">by AliStudio Lab</span></h1>
+          <p class="header-subtitle" id="bannerSubtitle">Hệ thống đang quét phần cứng...</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-stat-chip" id="headerUptimeChip" title="Thời gian hoạt động">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" width="12" height="12"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+          <span id="headerUptime">0h 0m</span>
+        </div>
+        <div class="header-stat-chip temp" id="headerTempChip" title="Nhiệt độ CPU">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" width="12" height="12"><path d="M8 2v7M5 12a3 3 0 106 0 3 3 0 00-6 0z"/></svg>
+          <span id="headerCpuTemp">--°C</span>
+        </div>
+        <div class="status-pill"><span class="dot-live"></span> Realtime</div>
+      </div>
+    </header>
+
+    <!-- Body = Sidebar + Content -->
+    <div class="app-body">
+
+    <!-- LEFT SIDEBAR NAVIGATION -->
+    <nav class="sidebar" id="appSidebar">
+      <button class="sidebar-toggle" id="sidebarToggleBtn" title="Ẩn/Hiện Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+
+      <div class="sidebar-nav">
+        <button class="tab-item active" data-tab="tab-home">
+          <div class="tab-badge-circle home">🏠</div>
+          <span class="tab-label">Trang Chủ</span>
+        </button>
+        <button class="tab-item" data-tab="tab-cpu">
+          <div class="tab-badge-circle amd" id="tabCircleCpu">CPU</div>
+          <span class="tab-label">Bộ xử lý (CPU)</span>
+        </button>
+        <button class="tab-item" data-tab="tab-mainboard">
+          <div class="tab-badge-circle mb">MB</div>
+          <span class="tab-label">Mainboard</span>
+        </button>
+        <button class="tab-item" data-tab="tab-memory">
+          <div class="tab-badge-circle ram">RAM</div>
+          <span class="tab-label">Bộ nhớ (RAM)</span>
+        </button>
+        <button class="tab-item" data-tab="tab-spd">
+          <div class="tab-badge-circle spd">SPD</div>
+          <span class="tab-label">Khe RAM (SPD)</span>
+        </button>
+        <button class="tab-item" data-tab="tab-graphics">
+          <div class="tab-badge-circle nvidia" id="tabCircleGpu">GPU</div>
+          <span class="tab-label">Đồ họa (GPU)</span>
+        </button>
+        <button class="tab-item" data-tab="tab-storage">
+          <div class="tab-badge-circle ssd">SSD</div>
+          <span class="tab-label">Độ bền Ổ đĩa</span>
+        </button>
+        <button class="tab-item" data-tab="tab-network">
+          <div class="tab-badge-circle net">🌐</div>
+          <span class="tab-label">Mạng (Network)</span>
+        </button>
+        <button class="tab-item tab-stress" data-tab="tab-bench">
+          <div class="tab-badge-circle stress">🔥</div>
+          <span class="tab-label">Ép tải / Stress</span>
+        </button>
+      </div>
+
+      <!-- Mini CPU Realtime Bar -->
+      <div class="sidebar-cpu-mini">
+        <div class="sidebar-cpu-bar-track">
+          <div class="sidebar-cpu-bar-fill" id="sidebarCpuBar"></div>
+        </div>
+        <span class="sidebar-cpu-pct" id="sidebarCpuPct">0%</span>
+      </div>
+
+      <div class="sidebar-footer-version">v2.0 AliStudio</div>
+    </nav>
+
+    <!-- Tab Viewport Container -->
+    <main class="tab-viewport">
+
+      <!-- TAB TRANG CHỦ (TỔNG QUAN TẤT CẢ PHẦN CỨNG) -->
+      <section class="tab-panel active" id="tab-home">
+        
+        <!-- Hàng 1: Banner Hệ thống & 2 Đồng hồ vòng cung tròn Realtime CPU & RAM -->
+        <div class="home-top-grid">
+          <div class="home-hero-card">
+            <div class="hero-header">
+              <span class="hero-chip">HỆ THỐNG MÁY TÍNH</span>
+              <span class="hero-live-badge"><span class="dot-live"></span> Đang chạy ổn định</span>
+            </div>
+            <div class="hero-device-name" id="homePcName">AMD Ryzen Gaming PC</div>
+            <div class="hero-os-info" id="homeOsDetail">Windows 11 Pro 64-bit • Build 22631</div>
+            <div class="hero-specs-row">
+              <div class="hero-spec-pill">CPU: <b id="homeCpuPill">AMD Ryzen 5 2600</b></div>
+              <div class="hero-spec-pill">GPU: <b id="homeGpuPill">GTX 1660 SUPER</b></div>
+              <div class="hero-spec-pill">RAM: <b id="homeRamPill">16 GB DDR4</b></div>
+              <div class="hero-spec-pill">SSD: <b id="homeDiskPill">3 Ổ đĩa (OK)</b></div>
+            </div>
+          </div>
+
+          <!-- 2 Đồng hồ đo Realtime trên Trang Chủ -->
+          <div class="home-gauges-card">
+            <div class="home-gauge-item">
+              <div class="gauge-arc-wrapper mini">
+                <svg class="circular-chart mini" viewBox="0 0 100 100">
+                  <path class="circle-bg" d="M 15 80 A 42 42 0 1 1 85 80" />
+                  <path class="circle-arc cpu" id="homeCpuArc" stroke-dasharray="0, 200" d="M 15 80 A 42 42 0 1 1 85 80" />
+                </svg>
+                <div class="gauge-center-info mini">
+                  <span class="gauge-percent text-cyan" id="homeCpuPercent">0%</span>
+                  <span class="gauge-sublabel">CPU Load</span>
+                </div>
+              </div>
+              <div class="gauge-mini-lbl">Xung nhịp: <b class="font-mono text-cyan" id="homeCpuClock">-- GHz</b></div>
+            </div>
+
+            <div class="home-gauge-item">
+              <div class="gauge-arc-wrapper mini">
+                <svg class="circular-chart mini" viewBox="0 0 100 100">
+                  <path class="circle-bg" d="M 15 80 A 42 42 0 1 1 85 80" />
+                  <path class="circle-arc ram" id="homeRamArc" stroke-dasharray="0, 200" d="M 15 80 A 42 42 0 1 1 85 80" />
+                </svg>
+                <div class="gauge-center-info mini">
+                  <span class="gauge-percent text-purple" id="homeRamPercent">0%</span>
+                  <span class="gauge-sublabel">RAM Load</span>
+                </div>
+              </div>
+              <div class="gauge-mini-lbl">Dùng: <b class="font-mono text-purple" id="homeRamUsed">0 GB / 16 GB</b></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hàng 2: Grid 4 Thẻ Linh Kiện Chủ Chốt Có Hình Vòng Tròn Hãng 3D -->
+        <h3 class="home-section-title">Tổng Hợp Linh Kiện Phần Cứng (Hardware Overview)</h3>
+        <div class="home-hardware-grid">
+
+          <!-- Card 1: CPU -->
+          <div class="home-hw-card" onclick="document.querySelector('[data-tab=tab-cpu]').click()">
+            <div class="home-hw-left">
+              <div class="home-brand-circle amd">
+                <img src="../assets/brand_amd.jpg" alt="AMD" class="mini-brand-img" id="homeCpuImg">
+              </div>
+            </div>
+            <div class="home-hw-right">
+              <div class="hw-category text-amber">BỘ VI XỬ LÝ (CPU)</div>
+              <div class="hw-main-name" id="homeCpuName">AMD Ryzen 5 2600</div>
+              <div class="hw-meta-line" id="homeCpuDetail">6 Cores • 12 Threads • 3.4 GHz</div>
+              <div class="hw-status-tag good">Trạng thái: Hoạt động tốt</div>
+            </div>
+          </div>
+
+          <!-- Card 2: GPU -->
+          <div class="home-hw-card" onclick="document.querySelector('[data-tab=tab-graphics]').click()">
+            <div class="home-hw-left">
+              <div class="home-brand-circle nvidia">
+                <img src="../assets/brand_nvidia.jpg" alt="NVIDIA" class="mini-brand-img" id="homeGpuImg">
+              </div>
+            </div>
+            <div class="home-hw-right">
+              <div class="hw-category text-green">CARD ĐỒ HỌA (GPU)</div>
+              <div class="hw-main-name" id="homeGpuName">NVIDIA GeForce GTX 1660 SUPER</div>
+              <div class="hw-meta-line" id="homeGpuDetail">6 GB GDDR6 • PCIe 3.0 x16</div>
+              <div class="hw-status-tag good">Driver: Game Ready (OK)</div>
+            </div>
+          </div>
+
+          <!-- Card 3: RAM -->
+          <div class="home-hw-card" onclick="document.querySelector('[data-tab=tab-memory]').click()">
+            <div class="home-hw-left">
+              <div class="home-brand-circle ram">
+                <img src="../assets/ram_stick.jpg" alt="RAM" class="mini-brand-img">
+              </div>
+            </div>
+            <div class="home-hw-right">
+              <div class="hw-category text-purple">BỘ NHỚ HỆ THỐNG (RAM)</div>
+              <div class="hw-main-name" id="homeRamName">16 GB DDR4 (Dual Channel)</div>
+              <div class="hw-meta-line" id="homeRamDetail">2 Thanh RAM đang cắm • Bus 2666 MHz</div>
+              <div class="hw-status-tag good">Độ bền: Bình thường</div>
+            </div>
+          </div>
+
+          <!-- Card 4: Ổ CỨNG SSD -->
+          <div class="home-hw-card" onclick="document.querySelector('[data-tab=tab-storage]').click()">
+            <div class="home-hw-left">
+              <div class="home-brand-circle ssd">
+                <img src="../assets/ssd_drive.jpg" alt="SSD" class="mini-brand-img">
+              </div>
+            </div>
+            <div class="home-hw-right">
+              <div class="hw-category text-cyan">LƯU TRỮ & ĐỘ BỀN (STORAGE)</div>
+              <div class="hw-main-name" id="homeStorageName">3 Ổ Cứng SSD / NVMe</div>
+              <div class="hw-meta-line" id="homeStorageDetail">WD SN520, Kingston, Seagate</div>
+              <div class="hw-status-tag good">S.M.A.R.T: Healthy 100%</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Hàng 3: Bo mạch chủ & Nút Thao tác Nhanh -->
+        <div class="home-bottom-grid">
+          <div class="home-info-box">
+            <div class="box-title">🔌 Bo Mạch Chủ (Mainboard) & BIOS</div>
+            <div class="box-body-text" id="homeMbText">Hãng sản xuất: Micro-Star International Co., Ltd. • Model: B450M PRO-VDH MAX • BIOS: Version 7A38vBH</div>
+          </div>
+          <div class="home-action-banner">
+            <button class="home-action-btn primary" onclick="document.querySelector('[data-tab=tab-bench]').click()">🔥 Vào Ép Tải Kiểm Tra Độ Bền</button>
+            <button class="home-action-btn secondary" id="btnHomeExport">📑 Xuất Báo Cáo Cấu Hình</button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TAB 1: CPU -->
+      <section class="tab-panel" id="tab-cpu">
+        <div class="panel-layout-grid">
+          <div class="specs-col">
+            <fieldset class="cpuz-group">
+              <legend>Processor (Bộ vi xử lý)</legend>
+              <div class="spec-row">
+                <span class="spec-label">Name</span>
+                <span class="spec-val highlight-blue bold" id="cpuName">AMD Ryzen 5 2600 Six-Core Processor</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Hãng (Brand)</span>
+                <span class="spec-val bold text-amber" id="cpuBrandText">AMD RYZEN</span>
+                <span class="spec-label mini">Package</span>
+                <span class="spec-val mini" id="cpuSocket">Socket AM4</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Code Name</span>
+                <span class="spec-val" id="cpuCodename">AMD Zen+ (Pinnacle Ridge)</span>
+                <span class="spec-label mini">Technology</span>
+                <span class="spec-val mini" id="cpuProcess">12 nm</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Specification</span>
+                <span class="spec-val bold" id="cpuSpec">--</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Instructions</span>
+                <span class="spec-val font-mono-sm" id="cpuInstructions">MMX(+), SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2, AVX, AVX2, FMA3, AES</span>
+              </div>
+            </fieldset>
+
+            <div class="sub-grid">
+              <fieldset class="cpuz-group">
+                <legend>Clocks (Xung nhịp Core #0)</legend>
+                <div class="spec-row compact">
+                  <span class="spec-label">Core Speed</span>
+                  <span class="spec-val font-mono bold text-cyan" id="cpuCoreSpeed">-- MHz</span>
+                </div>
+                <div class="spec-row compact">
+                  <span class="spec-label">Multiplier</span>
+                  <span class="spec-val font-mono" id="cpuMultiplier">x 36.0</span>
+                </div>
+                <div class="spec-row compact">
+                  <span class="spec-label">Bus Speed</span>
+                  <span class="spec-val font-mono">99.8 MHz</span>
+                </div>
+              </fieldset>
+
+              <fieldset class="cpuz-group">
+                <legend>Cache</legend>
+                <div class="spec-row compact">
+                  <span class="spec-label">L1 Cache</span>
+                  <span class="spec-val font-mono" id="cacheL1d">6 x 32 KB</span>
+                </div>
+                <div class="spec-row compact">
+                  <span class="spec-label">L2 Cache</span>
+                  <span class="spec-val font-mono" id="cacheL2">6 x 512 KB</span>
+                </div>
+                <div class="spec-row compact">
+                  <span class="spec-label">L3 Cache</span>
+                  <span class="spec-val font-mono bold text-amber" id="cacheL3">16 MB</span>
+                </div>
+              </fieldset>
+            </div>
+
+            <fieldset class="cpuz-group">
+              <div class="spec-row compact">
+                <span class="spec-label">Selection</span>
+                <span class="spec-val">Socket #1</span>
+                <span class="spec-label mini">Cores</span>
+                <span class="spec-val mini bold text-cyan" id="coreCount">6</span>
+                <span class="spec-label mini">Threads</span>
+                <span class="spec-val mini bold text-cyan" id="threadCount">12</span>
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- VÒNG TRÒN HÃNG CPU RYZEN -->
+          <div class="visual-col">
+            <div class="circle-brand-card">
+              <div class="circle-portal amd" id="cpuPortalRing">
+                <img src="../assets/brand_amd.jpg" alt="AMD Ryzen" class="brand-circle-img" id="cpuBrandImg">
+                <div class="glowing-ring amd"></div>
+              </div>
+              <div class="brand-card-info">
+                <div class="brand-title" id="cpuBrandTitle">AMD RYZEN™</div>
+                <div class="brand-badge-tag amd" id="cpuBrandTag">AMD Official Series</div>
+                <div class="brand-desc" id="cpuBrandDesc">Pinnacle Ridge • 12nm FinFET</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: MAINBOARD -->
+      <section class="tab-panel" id="tab-mainboard">
+        <fieldset class="cpuz-group">
+          <legend>Motherboard (Bo mạch chủ)</legend>
+          <div class="spec-row">
+            <span class="spec-label">Manufacturer</span>
+            <span class="spec-val bold" id="mbVendor">--</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Model</span>
+            <span class="spec-val bold text-cyan" id="mbModel">--</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Bus Specs</span>
+            <span class="spec-val">PCI-Express 3.0 (8.0 GT/s)</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Serial Number</span>
+            <span class="spec-val font-mono-sm" id="mbSerial">--</span>
+          </div>
+        </fieldset>
+
+        <fieldset class="cpuz-group">
+          <legend>BIOS</legend>
+          <div class="spec-row">
+            <span class="spec-label">Brand</span>
+            <span class="spec-val" id="biosVendor">--</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Version</span>
+            <span class="spec-val font-mono bold" id="biosVersion">--</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Date</span>
+            <span class="spec-val" id="biosDate">--</span>
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- TAB 3: MEMORY (ĐÃ CHUYỂN SANG ĐỒ HỒ VÒNG CUNG TRÒN MỨC RAM) -->
+      <section class="tab-panel" id="tab-memory">
+        <div class="panel-layout-grid">
+          <div class="specs-col">
+            <fieldset class="cpuz-group">
+              <legend>General (Thông tin chung)</legend>
+              <div class="spec-row">
+                <span class="spec-label">Type</span>
+                <span class="spec-val bold text-cyan" id="ramType">DDR4</span>
+                <span class="spec-label mini">Channel #</span>
+                <span class="spec-val mini bold" id="ramChannels">Dual</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Size</span>
+                <span class="spec-val bold text-amber" id="ramSize">16 GBytes</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">DRAM Frequency</span>
+                <span class="spec-val font-mono bold text-cyan" id="ramFreq">-- MHz</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Slots Occupied</span>
+                <span class="spec-val" id="ramSlots">2 / 4 Slots</span>
+              </div>
+            </fieldset>
+
+            <!-- KHỐI ĐỒ HỒ VÒNG CUNG TRÒN MỨC RAM REALTIME -->
+            <fieldset class="cpuz-group">
+              <legend>Mức Tiêu Thụ RAM (Circular Gauge)</legend>
+              <div class="gauge-card-container">
+                <div class="gauge-arc-wrapper">
+                  <svg class="circular-chart" viewBox="0 0 100 100">
+                    <path class="circle-bg"
+                      d="M 15 80 A 42 42 0 1 1 85 80" />
+                    <path class="circle-arc ram" id="ramArcPath"
+                      stroke-dasharray="0, 200"
+                      d="M 15 80 A 42 42 0 1 1 85 80" />
+                  </svg>
+                  <div class="gauge-center-info">
+                    <span class="gauge-percent text-purple" id="ramGaugePercent">0%</span>
+                    <span class="gauge-sublabel">Đang dùng</span>
+                  </div>
+                </div>
+                <div class="gauge-details">
+                  <div class="gauge-detail-item">
+                    <span class="lbl">Dung lượng đang dùng:</span>
+                    <span class="val font-mono text-purple bold" id="ramGaugeUsed">0.0 GB</span>
+                  </div>
+                  <div class="gauge-detail-item">
+                    <span class="lbl">Bộ nhớ khả dụng:</span>
+                    <span class="val font-mono text-cyan bold" id="ramGaugeAvail">0.0 GB</span>
+                  </div>
+                  <div class="gauge-detail-item">
+                    <span class="lbl">Tổng RAM hệ thống:</span>
+                    <span class="val font-mono bold" id="ramGaugeTotal">16.0 GB</span>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="visual-col">
+            <div class="circle-brand-card">
+              <div class="circle-portal ram">
+                <img src="../assets/ram_stick.jpg" alt="RAM Stick" class="brand-circle-img">
+                <div class="glowing-ring ram"></div>
+              </div>
+              <div class="brand-card-info">
+                <div class="brand-title">DDR4 MEMORY</div>
+                <div class="brand-badge-tag ram">High-Speed Module</div>
+                <div class="brand-desc">Dual-Channel Gaming RAM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: SPD SLOTS -->
+      <section class="tab-panel" id="tab-spd">
+        <fieldset class="cpuz-group">
+          <legend>Memory Slot Selection</legend>
+          <div class="spec-row">
+            <span class="spec-label">Select Slot</span>
+            <select id="spdSlotSelect" class="form-select"></select>
+          </div>
+        </fieldset>
+
+        <fieldset class="cpuz-group">
+          <legend>Module Specifications</legend>
+          <div class="spec-row">
+            <span class="spec-label">Module Size</span>
+            <span class="spec-val bold text-cyan" id="spdSize">--</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Max Bandwidth</span>
+            <span class="spec-val" id="spdSpeed">--</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Manufacturer</span>
+            <span class="spec-val" id="spdManuf">--</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Part Number</span>
+            <span class="spec-val font-mono-sm" id="spdPart">--</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Serial Number</span>
+            <span class="spec-val font-mono-sm" id="spdSerial">--</span>
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- TAB 5: GRAPHICS -->
+      <section class="tab-panel" id="tab-graphics">
+        <div class="panel-layout-grid">
+          <div class="specs-col">
+            <fieldset class="cpuz-group">
+              <legend>Display Adapter Selection</legend>
+              <div class="spec-row">
+                <span class="spec-label">Card đồ họa</span>
+                <select id="gpuSelect" class="form-select"></select>
+              </div>
+            </fieldset>
+
+            <fieldset class="cpuz-group">
+              <legend>GPU Specification</legend>
+              <div class="spec-row">
+                <span class="spec-label">Name</span>
+                <span class="spec-val bold text-green" id="gpuModel">--</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Hãng (Vendor)</span>
+                <span class="spec-val bold text-green" id="gpuVendorText">NVIDIA</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Memory Size</span>
+                <span class="spec-val bold text-amber" id="gpuVram">--</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Driver Version</span>
+                <span class="spec-val font-mono-sm" id="gpuDriver">--</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Bus Interface</span>
+                <span class="spec-val" id="gpuBus">PCIe x16</span>
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- VÒNG TRÒN HÃNG GPU NVIDIA -->
+          <div class="visual-col">
+            <div class="circle-brand-card">
+              <div class="circle-portal nvidia" id="gpuPortalRing">
+                <img src="../assets/brand_nvidia.jpg" alt="NVIDIA GeForce" class="brand-circle-img" id="gpuBrandImg">
+                <div class="glowing-ring nvidia"></div>
+              </div>
+              <div class="brand-card-info">
+                <div class="brand-title" id="gpuBrandTitle">NVIDIA GEFORCE</div>
+                <div class="brand-badge-tag nvidia" id="gpuBrandTag">GeForce Game Ready</div>
+                <div class="brand-desc" id="gpuBrandDesc">GTX 1660 SUPER • Turing Arch</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: STORAGE & HEALTH -->
+      <section class="tab-panel" id="tab-storage">
+        <div class="panel-layout-grid">
+          <div class="specs-col">
+            <fieldset class="cpuz-group">
+              <legend>Tình Trạng Sức Khỏe & Độ Bền Ổ Đĩa (Storage Health)</legend>
+              <div id="diskHealthContainer" class="disk-health-list">
+                <!-- Danh sách ổ đĩa kèm Badge Healthy / Warning -->
+              </div>
+            </fieldset>
+
+            <fieldset class="cpuz-group">
+              <legend>Phân Vùng Ổ Cứng (Vòng cung tròn từng ổ C, D,...)</legend>
+              <div id="partitionsContainer" class="partition-arc-grid">
+                <!-- Sẽ inject các vòng cung tròn phân vùng ổ C, D,... -->
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="visual-col">
+            <div class="circle-brand-card">
+              <div class="circle-portal ssd">
+                <img src="../assets/ssd_drive.jpg" alt="NVMe SSD Drive" class="brand-circle-img">
+                <div class="glowing-ring ssd"></div>
+              </div>
+              <div class="brand-card-info">
+                <div class="brand-title">NVMe / SSD STORAGE</div>
+                <div class="brand-badge-tag ssd">S.M.A.R.T Protected</div>
+                <div class="brand-desc">Health Status: Healthy 100%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 7: BENCHMARK & STRESS TEST (VỚI 2 ĐỒ HỒ VÒNG CUNG CHO CPU & RAM LOAD) -->
+      <section class="tab-panel" id="tab-bench">
+        <fieldset class="cpuz-group">
+          <legend>CPU Benchmark (Đo Hiệu Năng Chuẩn CPU-Z)</legend>
+          <div class="bench-card-row">
+            <div class="bench-meta">
+              <div class="bench-title">CPU Single Thread (Đơn nhân)</div>
+              <div class="bench-pts font-mono bold text-cyan" id="singleBenchScore">---</div>
+            </div>
+            <button class="btn-primary" id="btnBenchSingle">Bench CPU (Single)</button>
+          </div>
+
+          <div class="bench-card-row" style="margin-top: 10px;">
+            <div class="bench-meta">
+              <div class="bench-title">CPU Multi Thread (Đa nhân)</div>
+              <div class="bench-pts font-mono bold text-green" id="multiBenchScore">---</div>
+            </div>
+            <button class="btn-primary" id="btnBenchMulti">Bench CPU (Multi)</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="cpuz-group stress-tester-group">
+          <legend>CPU & RAM Stress Test (Kiểm Tra Độ Bền & Ép Tải)</legend>
+          <p class="stress-explanation">
+            Ép tải 100% tất cả các nhân và luồng của CPU để kiểm tra khả năng chịu nhiệt, độ bền quạt tản nhiệt và độ ổn định của bộ nguồn (PSU).
+          </p>
+
+          <!-- 2 ĐỒ HỒ VÒNG CUNG TRÒN ĐO TẢI CPU VÀ RAM KHI STRESS TEST -->
+          <div class="stress-dual-arcs">
+            <div class="arc-meter-box">
+              <div class="gauge-arc-wrapper mini">
+                <svg class="circular-chart mini" viewBox="0 0 100 100">
+                  <path class="circle-bg" d="M 15 80 A 42 42 0 1 1 85 80" />
+                  <path class="circle-arc cpu" id="stressCpuArcPath" stroke-dasharray="0, 200" d="M 15 80 A 42 42 0 1 1 85 80" />
+                </svg>
+                <div class="gauge-center-info mini">
+                  <span class="gauge-percent text-cyan" id="stressLiveLoad">0%</span>
+                  <span class="gauge-sublabel">CPU Load</span>
+                </div>
+              </div>
+              <div class="arc-meta-sub">
+                <span>Xung nhịp: <b class="text-amber font-mono" id="stressLiveClock">-- GHz</b></span>
+              </div>
+            </div>
+
+            <div class="arc-meter-box">
+              <div class="gauge-arc-wrapper mini">
+                <svg class="circular-chart mini" viewBox="0 0 100 100">
+                  <path class="circle-bg" d="M 15 80 A 42 42 0 1 1 85 80" />
+                  <path class="circle-arc ram" id="stressRamArcPath" stroke-dasharray="0, 200" d="M 15 80 A 42 42 0 1 1 85 80" />
+                </svg>
+                <div class="gauge-center-info mini">
+                  <span class="gauge-percent text-purple" id="stressLiveRam">0%</span>
+                  <span class="gauge-sublabel">RAM Load</span>
+                </div>
+              </div>
+              <div class="arc-meta-sub">
+                <span>Thời gian: <b class="font-mono text-cyan" id="stressTimer">00:00</b></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stress-control-row">
+            <div class="thread-picker">
+              <label>Số luồng ép tải:</label>
+              <select id="stressThreadsSelect" class="form-select mini">
+                <option value="6">6 Luồng (Cores)</option>
+                <option value="12" selected>12 Luồng (Tối đa 100%)</option>
+              </select>
+            </div>
+
+            <div class="stress-buttons">
+              <button class="btn-stress-start" id="btnStartStress">Bắt Đầu Ép Tải (Stress Test)</button>
+              <button class="btn-stress-stop" id="btnStopStress" disabled>Dừng Kiểm Tra</button>
+            </div>
+          </div>
+
+          <div class="stress-alert" id="stressStatusBadge">
+            Trạng thái: Máy tính đang hoạt động bình thường (Idle)
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- TAB MẠNG (NETWORK) -->
+      <section class="tab-panel" id="tab-network">
+        <fieldset class="cpuz-group">
+          <legend>🌐 Mạng (Network Monitor) — Realtime</legend>
+
+          <!-- 2 Arc gauges: Download & Upload -->
+          <div class="net-dual-arc">
+            <div class="net-arc-box">
+              <div class="net-arc-label">Download (RX)</div>
+              <div class="gauge-arc-wrapper">
+                <svg class="circular-chart" viewBox="0 0 100 100">
+                  <path class="circle-bg" d="M 15 80 A 42 42 0 1 1 85 80" />
+                  <path class="circle-arc" id="netRxArc" stroke="#38bdf8" style="filter:drop-shadow(0 0 6px #38bdf8)" stroke-dasharray="0, 200" d="M 15 80 A 42 42 0 1 1 85 80" />
+                </svg>
+                <div class="gauge-center-info">
+                  <span class="gauge-percent text-cyan" id="netRxSpeed">0</span>
+                  <span class="gauge-sublabel">KB/s</span>
+                </div>
+              </div>
+              <div class="net-speed-peak">Peak: <b id="netRxPeak" class="text-cyan">0 KB/s</b></div>
+            </div>
+
+            <div class="net-arc-box">
+              <div class="net-arc-label">Upload (TX)</div>
+              <div class="gauge-arc-wrapper">
+                <svg class="circular-chart" viewBox="0 0 100 100">
+                  <path class="circle-bg" d="M 15 80 A 42 42 0 1 1 85 80" />
+                  <path class="circle-arc" id="netTxArc" stroke="#c084fc" style="filter:drop-shadow(0 0 6px #c084fc)" stroke-dasharray="0, 200" d="M 15 80 A 42 42 0 1 1 85 80" />
+                </svg>
+                <div class="gauge-center-info">
+                  <span class="gauge-percent text-purple" id="netTxSpeed">0</span>
+                  <span class="gauge-sublabel">KB/s</span>
+                </div>
+              </div>
+              <div class="net-speed-peak">Peak: <b id="netTxPeak" class="text-purple">0 KB/s</b></div>
+            </div>
+          </div>
+
+          <!-- Thông tin adapter -->
+          <div class="net-info-grid">
+            <div class="net-info-item">
+              <span class="spec-label">Adapter:</span>
+              <span class="spec-val bold" id="netIface">Detecting...</span>
+              <button class="copy-btn" onclick="copyVal('netIface')">📋</button>
+            </div>
+            <div class="net-info-item">
+              <span class="spec-label">Loại kết nối:</span>
+              <span class="spec-val" id="netType">--</span>
+            </div>
+            <div class="net-info-item">
+              <span class="spec-label">IP địa chỉ (IPv4):</span>
+              <span class="spec-val text-cyan" id="netIp">--</span>
+              <button class="copy-btn" onclick="copyVal('netIp')">📋</button>
+            </div>
+            <div class="net-info-item">
+              <span class="spec-label">MAC Address:</span>
+              <span class="spec-val font-mono" id="netMac">--</span>
+              <button class="copy-btn" onclick="copyVal('netMac')">📋</button>
+            </div>
+          </div>
+        </fieldset>
+      </section>
+
+    </main>
+
+    </div><!-- end .app-body -->
+
+
+    <!-- App Bottom Footer -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <span class="status-indicator"></span>
+        <span id="footerStatus">Hardware Inspector • by AliStudio Lab</span>
+      </div>
+      <div class="footer-right">
+        <button class="btn-secondary" id="btnExportTxt">Xuất Báo Cáo TXT</button>
+        <button class="btn-secondary" id="btnCloseApp">Đóng App</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

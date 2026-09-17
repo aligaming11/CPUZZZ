@@ -1,0 +1,30 @@
+# Thư mục build/release - không cần commit
+release/
+dist/
+
+# Node modules - sẽ được cài lại sau khi clone
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Electron builder cache
+.cache/
+builder-debug.yml
+builder-effective-config.yaml
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Test
+test-specs.js
+
+# Temp
+*.tmp

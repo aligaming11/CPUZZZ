@@ -1,0 +1,80 @@
+{
+  "name": "hardware-inspector",
+  "version": "2.0.0",
+  "description": "Ứng dụng kiểm tra phần cứng Windows chuyên nghiệp bởi AliStudio Lab",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win nsis",
+    "build:installer": "electron-builder --win nsis",
+    "build:portable": "electron-builder --win portable",
+    "build:all": "electron-builder --win nsis portable"
+  },
+  "keywords": ["hardware", "windows", "specs", "system-info", "alistudio"],
+  "author": "AliStudio Lab",
+  "license": "MIT",
+  "dependencies": {
+    "systeminformation": "5.33.11"
+  },
+  "devDependencies": {
+    "electron": "33.4.11",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "com.alistudio.hardwareinspector",
+    "productName": "Hardware Inspector",
+    "copyright": "© 2026 AliStudio Lab",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "assets/**/*",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "assets"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "publisherName": "AliStudio Lab",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Hardware Inspector",
+      "displayLanguageSelector": false,
+      "artifactName": "HardwareInspector-Setup-v${version}.exe",
+      "include": "installer.nsh",
+      "installerLanguages": ["English"],
+      "unicode": true
+    },
+    "portable": {
+      "artifactName": "HardwareInspector-Portable-v${version}.exe"
+    },
+    "publish": null
+  }
+}
