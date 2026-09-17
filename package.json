@@ -68,8 +68,6 @@
       "shortcutName": "Hardware Inspector",
       "displayLanguageSelector": false,
       "artifactName": "HardwareInspector-Setup-v${version}.exe",
-      "include": "installer.nsh",
-      "installerLanguages": ["English"],
       "unicode": true
     },
     "portable": {
